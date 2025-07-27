@@ -11,3 +11,8 @@ Projektet är:
 Alla varumärken, inklusive "Plejd", tillhör sina respektive ägare och används endast i referenssyfte för att beskriva kompatibilitet.
 
 Om du är representant för Plejd AB och anser att projektet bryter rättigheter, vänligen kontakta mig. 
+
+## 📬 Kontakt
+
+**Max Rand**  
+📧 [max.wrand@gmail.com](mailto:max.wrand@gmail.com)
