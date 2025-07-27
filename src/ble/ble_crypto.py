@@ -3,17 +3,18 @@ import binascii, struct
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 from cryptography.hazmat.backends import default_backend
 
-#                AES KEY   DEVI ADDR  PAYLOAD DATA
-def encrypt_data(key: str, addr: str, data: bytearray) -> bytearray:
+
+# Encrypt data
+def encrypt_data(aes_key: str, addr: str, data: bytearray) -> bytearray:
 
     # Final output
     output = b""
 
     # Format for encryption
-    key  = binascii.a2b_hex(key.replace("-", ""))
+    aes_key  = binascii.a2b_hex(aes_key.replace("-", ""))
     addr = binascii.a2b_hex(addr.replace(":", ""))
 
-    cipher = Cipher(algorithms.AES(bytearray(key)), modes.ECB(), backend=default_backend())
+    cipher = Cipher(algorithms.AES(bytearray(aes_key)), modes.ECB(), backend=default_backend())
     cipher = cipher.encryptor()
 
     buf = addr + addr + addr[:4]
@@ -22,6 +23,8 @@ def encrypt_data(key: str, addr: str, data: bytearray) -> bytearray:
     for i, d in enumerate(data): output += struct.pack("B", d ^ cipher[i % 16])
     return output
 
+
+# Generate auth response
 def auth_response(key: str, addr: str, challenge: bytearray) -> bytearray:
     
     key = binascii.a2b_hex(key.replace("-", ""))

@@ -2,8 +2,8 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
 
-from interface.plejd_light import PlejdLight
-import asyncio
+from interface.device_light import DeviceLight
+
 
 
 # Create API app
@@ -22,13 +22,13 @@ class ActionRequest(BaseModel):
 
 
 # Stored plejd devices
-plejd_devices = {
-    "Vardagsrum": PlejdLight("C0:70:46:B8:ED:F7", "", "Vardagsrum"),
-    "Sovrum":     PlejdLight("DA:94:C6:25:F3:2D", "", "Sovrum"),
-    "Fasad":      PlejdLight("C9:D3:38:C4:3D:1D", "", "Fasad"),
-    "Loft":       PlejdLight("F2:87:A0:03:52:D2", "", "Loft"),
-    "Hall":       PlejdLight("DD:F2:8F:13:44:93", "", "Hall"),
-    "Kök":        PlejdLight("FE:51:44:6C:B8:1E", "", "Kök")
+_devices = {
+    "Vardagsrum": DeviceLight("C0:70:46:B8:ED:F7", "", "Vardagsrum"),
+    "Sovrum":     DeviceLight("DA:94:C6:25:F3:2D", "", "Sovrum"),
+    "Fasad":      DeviceLight("C9:D3:38:C4:3D:1D", "", "Fasad"),
+    "Loft":       DeviceLight("F2:87:A0:03:52:D2", "", "Loft"),
+    "Hall":       DeviceLight("DD:F2:8F:13:44:93", "", "Hall"),
+    "Kök":        DeviceLight("FE:51:44:6C:B8:1E", "", "Kök")
 }
 
 # Pass some action to devices
@@ -37,10 +37,10 @@ async def parse_command(req: ActionRequest):
 
     # Get room
     room = req.room
-    if room not in plejd_devices: return {"error": f"Unknown room: {room}"}
+    if room not in _devices: return {"error": f"Unknown room: {room}"}
     
     # Get device for room
-    device = plejd_devices[room]
+    device = _devices[room]
 
     # Pass action too plejd_interface
     await device.run_action({"action": req.action, "value": req.value})
@@ -52,9 +52,7 @@ async def parse_command(req: ActionRequest):
 
 # Add new device
 @app.post("/new")
-def new_device(json_data: dict):
-
-    pass
+def new_device(json_data: dict): pass
 
 
 # Example json data 
@@ -62,6 +60,4 @@ def new_device(json_data: dict):
 
 # states of specific device or all devices
 @app.get("/states")
-def get_states(json_data: dict):
-
-    pass
+def get_states(json_data: dict): pass

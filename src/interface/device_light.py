@@ -2,29 +2,31 @@
 from dataclasses import dataclass
 from bleak import BleakClient
 
-import interface.plejd_actions as action
+import interface.device_actions as action
 from ble.ble_characteristics import *
 from ble.ble_crypto import auth_response
 
 
 @dataclass
-class PlejdState:
+class DeviceState:
     
     available: bool
     obj_state: bool
     dim: int
 
 
-class PlejdLight():
+class DeviceLight():
+
 
     # Init ligth object
     def __init__(self, device_address: str, AES_KEY: str, name: str):
         
         self.address = device_address
         self.name    = name
-        self.state   = PlejdState(True, False, 0)
+        self.state   = DeviceState(True, False, 0)
         self.AES_KEY = AES_KEY
     
+
     # Handle action
     async def run_action(self, inf: dict):
 
@@ -37,12 +39,14 @@ class PlejdLight():
 
             except Exception as e: print(f"[{self.address}] Error during action: {e}")
     
+
     # Authenticate with device
     async def _authenticate(self, client: BleakClient):
 
-        challenge = await client.read_gatt_char(PLEJD_AUTH)
+        challenge = await client.read_gatt_char(UUID_AUTH)
         response = auth_response(self.AES_KEY, challenge)
-        await client.write_gatt_char(PLEJD_AUTH, response, response=True)
+        await client.write_gatt_char(UUID_AUTH, response, response=True)
+    
     
     # Run action on device
     async def _run_action(self, client: BleakClient, inf: dict):
@@ -56,7 +60,8 @@ class PlejdLight():
             if state == "on": await action._toggle_on(self, dim, client)
             elif state == "off": await action._toggle_off(self, client)
 
+
     # Logging
     def __str__(self): 
         
-        return f"<PlejdLight name={self.name}, address={self.address}, dim={self.state.dim}, state={self.state.obj_state}>"
+        return f"<DeviceLight name={self.name}, address={self.address}, dim={self.state.dim}, state={self.state.obj_state}>"
