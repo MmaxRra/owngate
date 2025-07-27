@@ -1,8 +1,8 @@
 # TODO
 
 ## Designing (py)
-- [ ] Fetch devices and create device objects
-- [ ] Connect to device
+- [x] Fetch devices and create device objects
+- [x] Connect to device
 - [ ] Reverse engineer encryption (crypto)
 - [ ] Analyze packets and implement send/receive
 - [ ] Model packets as structured objects
